@@ -3,10 +3,14 @@ package com.example.free.mycoolweather.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.free.mycoolweather.R;
 import com.example.free.mycoolweather.model.City;
 import com.example.free.mycoolweather.model.CoolWeatherDB;
 import com.example.free.mycoolweather.model.County;
@@ -58,8 +62,47 @@ public class ChooseAreaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate();
-    }
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.choose_area);
+        listView = (ListView) findViewById(R.id.list_view);
+        titleText =(TextView) findViewById(R.id.title_text);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,dataList);
+        listView.setAdapter(adapter);
+        coolWeatherDB = CoolWeatherDB.getInstance(this);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int index, long ary3) {
+                if(currentLevel == LEVEL_PROVINCE)
+                {
+                    selectedProvince = provinceList.get(index);
+                    queryCities();
 
+                }
+            }
+        });
+    }
+    /**
+     * 查找选中省内所有的市 优先从数据库中查询，如果没有则去服务器上查询。
+     */
+    private  void queryCities()
+    {
+        cityList = coolWeatherDB.loadCities(selectedProvince.getId());
+        if(cityList.size() > 0)
+        {
+            dataList.clear();
+            for(City city: cityList)
+            {
+                dataList.add(city.getCityName());
+            }
+            adapter.notifyDataSetChanged();
+            listView.setSelection(0);
+            titleText.setText(selectedProvince.getProvinceName());
+            currentLevel = LEVEL_CITY;
+        }else
+        {
+            
+        }
+    }
 }
 

@@ -45,7 +45,7 @@ public class Utility {
     {
         if(!TextUtils.isEmpty(response))
         {
-            String[] allCities = response.split(',');
+            String[] allCities = response.split(",");
             if(allCities != null && allCities.length > 0)
             {
                 for(String c: allCities)
