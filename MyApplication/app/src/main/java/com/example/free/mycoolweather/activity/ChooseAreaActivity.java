@@ -165,7 +165,7 @@ public class ChooseAreaActivity extends Activity {
         }
         else
         {
-            address = "http://www.weather.com.cn/data/list3/city.xml";
+            address = "http://guolin.tech/api/china/";
         }
         showProgressDialog();
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
